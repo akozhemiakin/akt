@@ -1,6 +1,6 @@
 [package]
 name = "akt"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   "Artyom Kozhemiakin <xenus.t@gmail.com>"
 ]
@@ -20,7 +20,11 @@ categories = ["network-programming", "asynchronous"]
 [dependencies]
 tokio = { version = "1", features = ["sync", "rt", "macros", "time"] }
 async-trait = "0.1.58"
+error-stack = { version = "0.2.4", optional = true }
 
 [dev-dependencies]
 thiserror = "1.0.38"
 tokio = { version = "1", features = ["sync", "rt", "macros", "time", "rt-multi-thread"] }
+
+[features]
+error-stack = ["dep:error-stack"]
