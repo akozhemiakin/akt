@@ -9,6 +9,9 @@ handlers out of the box and even provide tools to simplify some unusual
 kinds of communications like waiting for result without even blocking the
 main message loop.
 
+![docs.rs](https://img.shields.io/docsrs/akt)
+![Crates.io](https://img.shields.io/crates/v/akt)
+
 ## Status
 This library is on the very early stage of development. It means that:
 * You may face significant amount of bugs
