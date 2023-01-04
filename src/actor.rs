@@ -42,22 +42,24 @@ pub trait Actor: Send + Sized + 'static {
 
             actor.on_start(&mut context).await;
 
-            context.state = ActorState::Started;
+            if context.state == ActorState::Stopping && actor.on_stopping(&mut context).await {
 
-            loop {
-                if context.state == ActorState::Stopping
-                    && actor.on_stopping(&mut context).await == true
-                {
-                    break;
-                }
+            } else {
+                context.state = ActorState::Started;
 
-                select! {
-                    Some(message) = private_addr_rx.recv() => {
-                        message.handle(&mut actor, &mut context).await;
+                loop {
+                    if context.state == ActorState::Stopping && actor.on_stopping(&mut context).await {
+                        break;
                     }
-                    response = addr_rx.recv() => match response {
-                        Some(message) => { message.handle(&mut actor, &mut context).await },
-                        None => break
+
+                    select! {
+                        Some(message) = private_addr_rx.recv() => {
+                            message.handle(&mut actor, &mut context).await;
+                        }
+                        response = addr_rx.recv() => match response {
+                            Some(message) => { message.handle(&mut actor, &mut context).await },
+                            None => break
+                        }
                     }
                 }
             }
