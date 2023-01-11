@@ -52,6 +52,8 @@ pub trait Actor: Send + Sized + 'static {
                 }
 
                 select! {
+                    biased;
+                    
                     Some(message) = private_addr_rx.recv() => {
                         message.handle(&mut actor, &mut context).await;
                     }

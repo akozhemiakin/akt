@@ -5,7 +5,8 @@ authors = [
   "Artyom Kozhemiakin <xenus.t@gmail.com>"
 ]
 
-edition = "2021"
+rust-version = "1.56"
+edition = "2018"
 license = "MIT"
 description = """
 An actors library for Rust and Tokio
@@ -25,6 +26,3 @@ error-stack = { version = "0.2.4", optional = true }
 [dev-dependencies]
 thiserror = "1.0.38"
 tokio = { version = "1", features = ["sync", "rt", "macros", "time", "rt-multi-thread"] }
-
-[features]
-error-stack = ["dep:error-stack"]
