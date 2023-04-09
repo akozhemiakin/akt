@@ -131,7 +131,7 @@ pub use self::{
     address::{ActorSendError, Address, FailedToDeliver, Message, UnboundedAddress},
     context::{ActorState, Context},
     handler::Handler,
-    pool::{Pool, PoolAddress}
+    pool::{Pool, PoolAddress},
 };
 
 #[cfg(feature = "error-stack")]

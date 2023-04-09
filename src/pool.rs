@@ -1,8 +1,8 @@
-use std::{ops::Deref, thread::available_parallelism, num::NonZeroUsize};
+use std::{ops::Deref, thread::available_parallelism};
 
 use tokio::sync::mpsc;
 
-use crate::{Actor, Address, ActorSpawner};
+use crate::{Actor, ActorSpawner, Address};
 
 pub struct Pool<A: Actor> {
     actors_tx: mpsc::UnboundedSender<Address<A>>,
@@ -36,7 +36,10 @@ impl<A: Actor> Pool<A> {
             let _ = tx.send(spawner.spawn_run());
         }
 
-        Pool { actors_tx: tx, actors_rx: rx }
+        Pool {
+            actors_tx: tx,
+            actors_rx: rx,
+        }
     }
 
     pub fn with_spawner_default(spawner: ActorSpawner<A>) -> Pool<A> {
