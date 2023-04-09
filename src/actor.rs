@@ -8,7 +8,7 @@ use tokio::{
 use crate::{
     address::{Address, UnboundedAddress},
     handler::Envelope,
-    ActorState, Context,
+    ActorState, Context, Pool,
 };
 
 /// Core trait that should be implemented for each Actor.
@@ -53,7 +53,7 @@ pub trait Actor: Send + Sized + 'static {
 
                 select! {
                     biased;
-                    
+
                     Some(message) = private_addr_rx.recv() => {
                         message.handle(&mut actor, &mut context).await;
                     }
@@ -117,5 +117,13 @@ impl<A: Actor> ActorSpawner<A> {
     /// Spawns an actor and immediately returns its address
     pub fn spawn_run(&self) -> Address<A> {
         (self.spawn)().run()
+    }
+
+    pub fn into_pool(self, instances: usize) -> Pool<A> {
+        Pool::with_spawner(self, instances)
+    }
+
+    pub fn into_pool_default(self) -> Pool<A> {
+        Pool::with_spawner_default(self)
     }
 }

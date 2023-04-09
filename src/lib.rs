@@ -124,12 +124,14 @@ mod actor;
 mod address;
 mod context;
 mod handler;
+mod pool;
 
 pub use self::{
     actor::{Actor, ActorSpawner},
     address::{ActorSendError, Address, FailedToDeliver, Message, UnboundedAddress},
     context::{ActorState, Context},
     handler::Handler,
+    pool::{Pool, PoolAddress}
 };
 
 #[cfg(feature = "error-stack")]

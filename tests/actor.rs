@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use async_trait::async_trait;
 use akt::{Actor, Context};
+use async_trait::async_trait;
 use tokio::task::yield_now;
 
 struct DroppingActor {
