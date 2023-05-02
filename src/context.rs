@@ -3,7 +3,6 @@ use crate::{
     Actor,
 };
 
-
 /// Context passed to each handler
 pub struct Context<A: Actor> {
     address: WeakAddress<A>,
@@ -36,7 +35,7 @@ impl<A: Actor> Context<A> {
     /// Private address, prioritized and unbound.
     ///
     /// Should be used only by the current actor and other actors controlled by it.
-    /// 
+    ///
     /// Unlike the main address holding private address doesn't prevent actor
     /// from stopping if all public addresses are dropped.
     pub fn private_address(&self) -> UnboundedAddress<A> {

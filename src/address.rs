@@ -1,4 +1,4 @@
-use std::{time::Duration, fmt::Display, error::Error};
+use std::{error::Error, fmt::Display, time::Duration};
 
 use tokio::{
     sync::{
@@ -61,7 +61,7 @@ impl<A: Actor> Address<A> {
     /// Simplifies operations with some common kinds of results. Unpacks:
     /// - `tokio::oneshot::Receiver<T>` into `T`
     /// - `Result<tokio::oneshot::Receiver<Result<T, E>, E>` into `Result<T, E>`
-    /// 
+    ///
     /// It could be useful when you need to return `Receiver<T>` from handler
     /// immediately unblocking actors message loop to send `T` later.
     pub async fn send_unpack<M: Message + 'static, R>(
@@ -94,7 +94,7 @@ impl<A: Actor> Address<A> {
     }
 
     /// Returns `true` if actor is steel receiving messages.
-    /// 
+    ///
     /// The opposite of `is_closed`
     pub fn is_connected(&self) -> bool {
         !self.tx.is_closed()
@@ -152,17 +152,14 @@ impl<A: Actor> UnboundedAddress<A> {
         }
     }
 
-    pub fn notify<M: Message + 'static>(&self, message: M) -> Result<(), FailedToDeliver>
-    where
-        A: Handler<M>,
-    {
+    pub fn notify<M: Envelope<A> + 'static + Send>(
+        &self,
+        message: M,
+    ) -> Result<(), FailedToDeliver> {
         self.tx.send(Box::new(message)).map_err(|_| FailedToDeliver)
     }
 
-    pub fn notify_later<M: Message + 'static>(&self, message: M, after: Duration) -> ()
-    where
-        A: Handler<M>,
-    {
+    pub fn notify_later<M: Envelope<A> + 'static + Send>(&self, message: M, after: Duration) -> () {
         let address = self.clone();
 
         tokio::spawn(async move {
@@ -172,10 +169,7 @@ impl<A: Actor> UnboundedAddress<A> {
         });
     }
 
-    pub fn notify_at<M: Message + 'static>(&self, message: M, at: Instant) -> ()
-    where
-        A: Handler<M>,
-    {
+    pub fn notify_at<M: Envelope<A> + 'static + Send>(&self, message: M, at: Instant) -> () {
         let address = self.clone();
 
         tokio::spawn(async move {
@@ -232,7 +226,9 @@ impl Display for ActorSendError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ActorSendError::FailedToDeliver => write!(f, "Failed to deliver message to the actor"),
-            ActorSendError::FailedToGetResponse => write!(f, "Failed to get response from the actor"),
+            ActorSendError::FailedToGetResponse => {
+                write!(f, "Failed to get response from the actor")
+            }
         }
     }
 }
@@ -244,7 +240,7 @@ pub struct FailedToDeliver;
 
 impl Display for FailedToDeliver {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f , "Failed to deliver notification")
+        write!(f, "Failed to deliver notification")
     }
 }
 
